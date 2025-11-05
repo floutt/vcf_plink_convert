@@ -1,9 +1,10 @@
 from EIGENTOOLS import SNP_Info, Ind_Info, PackedAncestryMapWriter
+from math import nan
 import gzip
 import argparse
 
 
-GT_MAP = {"0/0": 0, "1/0": 1, "0/1": 1, "1/1": 2}
+GT_MAP = {"0/0": 0, "1/0": 1, "0/1": 1, "1/1": 2, "./.": nan}
 
 
 def write_snp_ind(vcf_file, snp_out, ind_out, ind_label, ind_sex=None):

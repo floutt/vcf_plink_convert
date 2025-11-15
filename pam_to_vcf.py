@@ -23,8 +23,6 @@ if __name__ == "__main__":
 
     parser.add_argument("--file_prefix", help="PACKEDANCESTRYMAP file prefix")
     parser.add_argument("--pops", help="File with newline-separated list of populations to include")
-    parser.add_argument("--flip", help="Flip alleles and adjust dosage",
-                        action='store_true')
 
     args = parser.parse_args()
 
@@ -47,9 +45,7 @@ if __name__ == "__main__":
     # print header
     print("#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t", end="")
     print("\t".join([pam.ind_info.ind_name[i] for i in inds]))
-    map_dosage_normal = {0: "\t0/0", 1: "\t0/1", 2: "\t1/1", nan: "\t./."}
-    map_dosage_flipped = {2: "\t0/0", 1: "\t0/1", 0: "\t1/1", nan: "\t./."}
-    map_dosage = map_dosage_flipped if args.flip else map_dosage_normal
+    map_dosage = {2: "\t0/0", 1: "\t0/1", 0: "\t1/1", nan: "\t./."}
 
     for e in pam:
         sinfo = e.get_SNP_Info()

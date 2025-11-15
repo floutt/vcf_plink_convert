@@ -4,7 +4,9 @@ import gzip
 import argparse
 
 
-GT_MAP = {"0/0": 0, "1/0": 1, "0/1": 1, "1/1": 2, "./.": nan, ".": nan}
+# PACKEDANCESTRYMAP files are encode with the REFERENCE dosage not the
+# alternative
+GT_MAP = {"0/0": 2, "1/0": 1, "0/1": 1, "1/1": 0, "./.": nan, ".": nan}
 
 
 def write_snp_ind(vcf_file, snp_out, ind_out, ind_label, ind_sex=None):
@@ -46,7 +48,7 @@ def write_snp_ind(vcf_file, snp_out, ind_out, ind_label, ind_sex=None):
     f.close()
 
 
-def vcf_to_pam(vcf_file, pam_prefix, ind_label, ind_sex=None, reverse=False):
+def vcf_to_pam(vcf_file, pam_prefix, ind_label, ind_sex=None):
     # write snp and ind files from the VCF
     write_snp_ind(vcf_file, pam_prefix + ".snp", pam_prefix + ".ind",
                   ind_label, ind_sex)
@@ -75,8 +77,6 @@ def vcf_to_pam(vcf_file, pam_prefix, ind_label, ind_sex=None, reverse=False):
         gt_idx = fmt_info.index("GT")
         genotypes = [x.split(":")[gt_idx].replace("|", "/") for x in elems[9:]]
         dosages = [GT_MAP[x] for x in genotypes]
-        if reverse:
-            dosages = [2 - x for x in dosages]
         paw.write_record(dosages)
 
 
@@ -87,8 +87,6 @@ if __name__ == "__main__":
     parser.add_argument("--out_prefix", help="output PACKEDANCESTRYMAP file prefix")
     parser.add_argument("--ind_pop", nargs="*", default=None, help="Population labels for each of the individuals in the VCF file")
     parser.add_argument("--ind_sex", nargs="*", default=None, help="Sex for each of the individuals in the VCF file")
-    parser.add_argument("--flip", help="Flip alleles and adjust dosage",
-                        action='store_true')
 
     args = parser.parse_args()
 
